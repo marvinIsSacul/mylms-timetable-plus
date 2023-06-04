@@ -5,6 +5,7 @@
         "target": "ES6",
         "lib": ["ES6", "DOM"],
         "esModuleInterop": true,
+        "allowJs": false,
         "sourceMap": true,
         "allowSyntheticDefaultImports" : true,
         //"rootDir": "src",
