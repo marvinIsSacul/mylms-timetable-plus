@@ -1,3 +1,9 @@
+'use-strict'
+
+import Calendar, { EventObject } from '@toast-ui/calendar'
+import dayjs from 'dayjs'
+
+
 export type MyLMSEventType = 'class' | 'orientation' | 'break' | 'assessments'
 
 export type MyLMSEvent = {
@@ -39,11 +45,11 @@ export function buildMyLMSEvents(): Array<MyLMSEvent> {
 
                 // start times
                 // Wednesday
-                if (components.day === 3 && hours === 0) {
+                if (components.day === 3) {
                     hours = 17
                 }
                 // Saturday
-                else if (components.day === 6 && hours === 0) {
+                else if (components.day === 6) {
                     hours = 8
                 }
 
@@ -51,6 +57,17 @@ export function buildMyLMSEvents(): Array<MyLMSEvent> {
             } else if (date !== null) {
                 const type = getMyLMSEventType(rsTxt)
                 const duration = getDuration(type, rsHeight)
+
+                if (type === 'break') {
+                    // Wednesday
+                    if (date.getDay() === 3) {
+                        hours = 16
+                    }
+                    // Saturday
+                    else if (date.getDay() === 6) {
+                        hours = 12
+                    }
+                } else 
 
                 date.setHours(hours, 0, 0);
 
@@ -61,18 +78,9 @@ export function buildMyLMSEvents(): Array<MyLMSEvent> {
                     description: rsTxt,
                 }
 
-                if (type === 'class' || type === 'break') {
-                    // Wednesday
-                    // TODO: Work here!!!
-                    // if (date.getDay() === 3) {
-                    //     if (hours === 17 && duration === 2)
-                    //         hours += duration * 2
-                    // }
-
-                    hours += duration
-                }
-
                 myLMSEvents.push(event)
+
+                hours += duration
             }
         }
     }
@@ -185,6 +193,124 @@ export function isSpecialTypeOfEvent(event: string) {
     return false
 }
 
-const events = buildMyLMSEvents()
+export function formatTime(time: string) {
+    return time
+}
 
-console.log(events);
+async function loadJS(url: string, async: 'false' | 'true' = 'false'): Promise<HTMLScriptElement> {
+    let scriptEle = document.createElement("script");
+  
+    scriptEle.setAttribute("src", url);
+    scriptEle.setAttribute("type", "text/javascript");
+    scriptEle.setAttribute("async", async);
+
+    return scriptEle
+
+    // return new Promise((res, rej) => {
+    //     // success event 
+    //     scriptEle.addEventListener("load", () => {
+    //         res(scriptEle)
+    //     })
+    //     // error event
+    //     scriptEle.addEventListener("error", (err) => {
+    //         rej(err)
+    //     })
+    // })
+}
+
+function loadCss(url: string) {
+    const scriptEle = document.createElement("link")
+  
+    scriptEle.setAttribute("href", url)
+    scriptEle.setAttribute("rel", "stylesheet")
+    scriptEle.setAttribute("type", "text/css")
+
+    return scriptEle
+}
+  
+
+export async function buildCalender(events: MyLMSEvent[]) {
+    const calenderUIId = 'cal1'
+
+    const uniqueId = 'myCalender-' + +new Date()
+    const elm = document.createElement('div')
+    elm.id = uniqueId
+    elm.style.height = '768px'
+    elm.style.width = '1400px'
+
+    const cssElm = loadCss('https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css')
+
+    document.getElementsByTagName('head')[0].append(cssElm)
+    //document.body.append(elm)
+
+    document.getElementById('timetable')?.replaceWith(elm)
+    
+    const calendar = new Calendar(elm, {
+        defaultView: 'month',
+        template: {
+            time(event: EventObject) {
+                const { start, end, title } = event
+                return `<span style="color: black;">${dayjs(start).format('HH:mm')} ${title}</span>`
+            },
+            allday(event: EventObject) {
+                return `<span style="color: gray;">${event.title}</span>`
+            },
+        },
+        isReadOnly: true,
+        gridSelection: false,
+        month: {
+            workweek: false,
+            startDayOfWeek: 1,
+            isAlways6Weeks: false,
+        },
+        calendars: [
+            {
+                id: calenderUIId,
+                name: 'Work',
+                backgroundColor: '#03bd9e',
+                borderColor: '#ff0101',
+            },
+            // {
+            //     id: 'cal2',
+            //     name: 'Work',
+            //     backgroundColor: '#00a9ff',
+            // },
+        ],
+    })
+    
+    calendar.createEvents(
+        events
+            .filter(event => true || event.type === 'class')
+            .map((event, index) => {
+                const evt: EventObject = {
+                    id: index,
+                    calendarId: calenderUIId,
+                    title: event.description,
+                    category: 'time',
+                    start: event.time,
+                    end: event.type === 'orientation' ? undefined : dayjs(event.time).add(event.duration, 'hours').toDate(),
+                    isAllday: event.type === 'orientation',
+                }
+
+                return evt
+            }),
+    )
+
+    window.setTimeout(calendar.next, 5000)
+    
+}
+
+
+(async function() {
+    const events = buildMyLMSEvents()
+    await buildCalender(events)
+
+    // const originalTimetable = document.getElementById('timetable')
+
+    // if (originalTimetable) {
+    //     originalTimetable.style.display = 'none'
+    // }
+
+    document.querySelectorAll('.timetable-events').forEach(e => e.remove())
+    document.querySelectorAll('#timetable ul').forEach(e => e.remove())
+})()
