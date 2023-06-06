@@ -193,11 +193,7 @@ export function isSpecialTypeOfEvent(event: string) {
     return false
 }
 
-export function formatTime(time: string) {
-    return time
-}
-
-async function loadJS(url: string, async: 'false' | 'true' = 'false'): Promise<HTMLScriptElement> {
+export async function loadJS(url: string, async: 'false' | 'true' = 'false'): Promise<HTMLScriptElement> {
     let scriptEle = document.createElement("script");
   
     scriptEle.setAttribute("src", url);
@@ -218,7 +214,7 @@ async function loadJS(url: string, async: 'false' | 'true' = 'false'): Promise<H
     // })
 }
 
-function loadCss(url: string) {
+export function loadCss(url: string) {
     const scriptEle = document.createElement("link")
   
     scriptEle.setAttribute("href", url)
@@ -227,25 +223,91 @@ function loadCss(url: string) {
 
     return scriptEle
 }
+
+export function calendarNav({ onNext, onPrev, onToday }: { onPrev: () => unknown, onNext: () => unknown, onToday: () => unknown }) {
+    const html = `
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><button type="button" class="page-link" onClick="">Previous</button></li>
+            <li class="page-item"><button type="button" class="page-link" onClick="">Next</button></li>
+        </ul>
+    </nav>
+    `
+    const css = loadCss('https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css')
+    document.getElementsByTagName('head')[0].append(css)
+
+    const nav = document.createElement('nav')
+    nav.ariaLabel = 'Calendar navigation'
+
+    const ul = document.createElement('ul')
+    ul.className = 'pagination'
+
+    const liToday = document.createElement('li')
+    liToday.className = 'page-item'
+
+    const liPrev = document.createElement('li')
+    liPrev.className = 'page-item'
+
+    const liNext = document.createElement('li')
+    liNext.className = 'page-item'
+
+    const btnToday = document.createElement('button')
+    btnToday.type = 'button'
+    btnToday.className = 'page-link'
+    btnToday.innerText = 'Today'
+    btnToday.onclick = onToday
+
+    const btnPrev = document.createElement('button')
+    btnPrev.type = 'button'
+    btnPrev.className = 'page-link'
+    btnPrev.innerText = 'Previous'
+    btnPrev.onclick = onPrev
+
+    const btnNext = document.createElement('button')
+    btnNext.type = 'button'
+    btnNext.className = 'page-link'
+    btnNext.innerText = 'Next'
+    btnNext.onclick = onNext
+
+
+    liToday.append(btnToday)
+    liNext.append(btnNext)
+    liPrev.append(btnPrev)
+    ul.append(liToday)
+    ul.append(liPrev)
+    ul.append(liNext)
+    nav.append(ul)
+
+    return nav
+}
   
 
-export async function buildCalender(events: MyLMSEvent[]) {
+export function buildCalendar(events: MyLMSEvent[]) {
+    const windowInnerWidth  = window.innerWidth
+    const windowInnerHeight = window.innerHeight
+
     const calenderUIId = 'cal1'
 
     const uniqueId = 'myCalender-' + +new Date()
-    const elm = document.createElement('div')
-    elm.id = uniqueId
-    elm.style.height = '768px'
-    elm.style.width = '1400px'
+    const calendarElm = document.createElement('div')
+    calendarElm.id = uniqueId
+    calendarElm.style.height = Math.floor(windowInnerHeight * 0.8) + 'px'
+    calendarElm.style.width = Math.floor(windowInnerWidth * 0.95) + 'px'
 
     const cssElm = loadCss('https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css')
 
     document.getElementsByTagName('head')[0].append(cssElm)
     //document.body.append(elm)
 
-    document.getElementById('timetable')?.replaceWith(elm)
+    calendarElm.prepend(calendarNav({
+        onNext: () => calendar.next(),
+        onPrev: () => calendar.prev(),
+        onToday: () => calendar.today(),
+    }))
+
+    document.getElementById('page-content')?.replaceChildren(calendarElm)
     
-    const calendar = new Calendar(elm, {
+    const calendar = new Calendar(calendarElm, {
         defaultView: 'month',
         template: {
             time(event: EventObject) {
@@ -266,15 +328,10 @@ export async function buildCalender(events: MyLMSEvent[]) {
         calendars: [
             {
                 id: calenderUIId,
-                name: 'Work',
+                name: 'School',
                 backgroundColor: '#03bd9e',
                 borderColor: '#ff0101',
             },
-            // {
-            //     id: 'cal2',
-            //     name: 'Work',
-            //     backgroundColor: '#00a9ff',
-            // },
         ],
     })
     
@@ -287,6 +344,7 @@ export async function buildCalender(events: MyLMSEvent[]) {
                     calendarId: calenderUIId,
                     title: event.description,
                     category: 'time',
+                    location: 'online',
                     start: event.time,
                     end: event.type === 'orientation' ? undefined : dayjs(event.time).add(event.duration, 'hours').toDate(),
                     isAllday: event.type === 'orientation',
@@ -296,14 +354,13 @@ export async function buildCalender(events: MyLMSEvent[]) {
             }),
     )
 
-    window.setTimeout(calendar.next, 5000)
-    
+    window.onresize = calendar.render
 }
 
 
-(async function() {
+(function() {
     const events = buildMyLMSEvents()
-    await buildCalender(events)
+    buildCalendar(events)
 
     // const originalTimetable = document.getElementById('timetable')
 
