@@ -224,17 +224,19 @@ export function loadCss(url: string) {
     return scriptEle
 }
 
-export function calendarNav({ onNext, onPrev, onToday }: { onPrev: () => unknown, onNext: () => unknown, onToday: () => unknown }) {
-    const html = `
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item"><button type="button" class="page-link" onClick="">Previous</button></li>
-            <li class="page-item"><button type="button" class="page-link" onClick="">Next</button></li>
-        </ul>
-    </nav>
-    `
+export function buildCalendarNav(calendar: Calendar) {
     const css = loadCss('https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css')
     document.getElementsByTagName('head')[0].append(css)
+
+    const h4 = document.createElement('h3')
+    h4.className = 'badge text-bg-info'
+    h4.style.marginLeft = '10px'
+
+    const updateDate = () => h4.innerText = dayjs(calendar.getDate().toDate()).format('MMMM YYYY')
+
+    updateDate()
+
+    const div = document.createElement('div')
 
     const nav = document.createElement('nav')
     nav.ariaLabel = 'Calendar navigation'
@@ -255,19 +257,19 @@ export function calendarNav({ onNext, onPrev, onToday }: { onPrev: () => unknown
     btnToday.type = 'button'
     btnToday.className = 'page-link'
     btnToday.innerText = 'Today'
-    btnToday.onclick = onToday
+    btnToday.onclick = () => { calendar.today(); updateDate() }
 
     const btnPrev = document.createElement('button')
     btnPrev.type = 'button'
     btnPrev.className = 'page-link'
     btnPrev.innerText = 'Previous'
-    btnPrev.onclick = onPrev
+    btnPrev.onclick = () => { calendar.prev(); updateDate() }
 
     const btnNext = document.createElement('button')
     btnNext.type = 'button'
     btnNext.className = 'page-link'
     btnNext.innerText = 'Next'
-    btnNext.onclick = onNext
+    btnNext.onclick = () => { calendar.next(); updateDate() }
 
 
     liToday.append(btnToday)
@@ -278,7 +280,15 @@ export function calendarNav({ onNext, onPrev, onToday }: { onPrev: () => unknown
     ul.append(liNext)
     nav.append(ul)
 
-    return nav
+
+    const dateEle = document.createElement('section')
+    
+    dateEle.append(h4)
+
+    div.append(nav)
+    div.append(dateEle)
+
+    return div
 }
   
 
@@ -297,13 +307,7 @@ export function buildCalendar(events: MyLMSEvent[]) {
     const cssElm = loadCss('https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css')
 
     document.getElementsByTagName('head')[0].append(cssElm)
-    //document.body.append(elm)
-
-    calendarElm.prepend(calendarNav({
-        onNext: () => calendar.next(),
-        onPrev: () => calendar.prev(),
-        onToday: () => calendar.today(),
-    }))
+    
 
     document.getElementById('page-content')?.replaceChildren(calendarElm)
     
@@ -337,7 +341,7 @@ export function buildCalendar(events: MyLMSEvent[]) {
     
     calendar.createEvents(
         events
-            .filter(event => true || event.type === 'class')
+            .filter(event => event.type === 'class')
             .map((event, index) => {
                 const evt: EventObject = {
                     id: index,
@@ -346,13 +350,17 @@ export function buildCalendar(events: MyLMSEvent[]) {
                     category: 'time',
                     location: 'online',
                     start: event.time,
-                    end: event.type === 'orientation' ? undefined : dayjs(event.time).add(event.duration, 'hours').toDate(),
-                    isAllday: event.type === 'orientation',
+                    end: new Array<MyLMSEventType>('orientation', 'break', 'assessments').includes(event.type) ?
+                        undefined : dayjs(event.time).add(event.duration, 'hours').toDate(),
+                   // isAllday: event.type === 'orientation',
                 }
 
                 return evt
             }),
     )
+
+    const navElm = buildCalendarNav(calendar)
+    document.querySelector('#page-content')?.prepend(navElm)
 
     window.onresize = calendar.render
 }

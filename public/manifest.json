@@ -1,12 +1,16 @@
 {
    "name": "MyLMS Timetable Plus",
    "description": "Enhance your MyLMS Timetable.",
+   "author": "Kagiso Marvin Molekwa",
    "version": "0.0.1",
    "manifest_version": 3,
    "permissions": [
       "activeTab",
       "scripting"
    ],
+   "action": {
+      "default_popup": "popup.html"
+   },
    "background": {
       "service_worker": "background.js"
    },
@@ -15,6 +19,5 @@
          "matches": ["https://mylms.vossie.net/mytimetable/*"],
          "js": ["content.js"]
       }
-    ],
-   "action": {}
+   ]
  }
