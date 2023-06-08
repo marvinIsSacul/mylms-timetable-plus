@@ -1,0 +1,32 @@
+{
+   "name": "MyLMS Timetable Plus",
+   "description": "Enhance your MyLMS Timetable.",
+   "author": "Kagiso Marvin Molekwa",
+   "version": "0.9.0",
+   "manifest_version": 3,
+   "permissions": [
+      "scripting"
+   ],
+   "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+         "16": "icon-16.png",
+         "32": "icon-32.png"
+      }
+   },
+   "icons": {
+      "16": "icon-16.png",
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [
+      {
+         "matches": ["https://mylms.vossie.net/mytimetable/*"],
+         "js": ["content.js"]
+      }
+   ]
+ }
