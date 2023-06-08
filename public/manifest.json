@@ -21,12 +21,18 @@
       "128": "icon-128.png"
    },
    "background": {
-      "service_worker": "background.js"
+      "scripts": ["background.js"]
    },
    "content_scripts": [
       {
          "matches": ["https://mylms.vossie.net/mytimetable/*"],
          "js": ["content.js"]
       }
-   ]
+   ],
+   "browser_specific_settings": {
+      "gecko": {
+        "id": "{47e1fb63-d08d-4ce1-9868-708489c237fd}",
+        "strict_min_version": "42.0"
+      }
+   }
  }
