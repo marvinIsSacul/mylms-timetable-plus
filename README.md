@@ -1,6 +1,6 @@
 # MyLMS Timetable Plus
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](/LICENSE.md)
 [![PRS: welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](/CONTRIBUTING.md)
 [![Browser Extension: TypeScript](https://img.shields.io/badge/Browser%20Extension-TypeScript-blue)](/CONTRIBUTING.md)
 
