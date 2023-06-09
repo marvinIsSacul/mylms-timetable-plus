@@ -40,5 +40,5 @@ There are many ways you can contribute:
 Please follow these coding standards when contributing to the project:
 
 - Use clear and concise comments to explain your code.
-- Ensure that your code is properly indented and formatted.
+- Ensure that your code is properly indented and formatted (using `npm run lint`).
 - Use descriptive function and variable names.
