@@ -1,12 +1,14 @@
 # MyLMS Timetable Plus
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![PRS: welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](/CONTRIBUTING.md)
+[![Browser Extension: TypeScript](https://img.shields.io/badge/Browser%20Extension-TypeScript-blue)](/CONTRIBUTING.md)
 
 ### Supercharge your My LMS Timetable.
 
 ## Overview
 
-**MyLMS Timetable Plus** is a browser extension that enhances the default MyLMS timetable. It's written in TypeScript.
+**MyLMS Timetable Plus** is a browser extension that enhances the default MyLMS timetable by providing a more intuitive look and feel. It's written in TypeScript.
 
 ![Demo or Screenshot 1](/screenshots/mylms+.PNG)
 
