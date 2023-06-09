@@ -3,45 +3,45 @@ export type Settings = {
 }
 
 export function settings() {
-    const SETTINGS_KEY = '_myLMS++settings'
+	const SETTINGS_KEY = '_myLMS++settings'
 
-    async function save(settings: Settings) {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
+	async function save(settings: Settings) {
+		localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
 
-        return settings
-    }
+		return settings
+	}
 
-    async function get(): Promise<Settings> {
-        const rawSettings = localStorage.getItem(SETTINGS_KEY)
+	async function get(): Promise<Settings> {
+		const rawSettings = localStorage.getItem(SETTINGS_KEY)
 
-        if (rawSettings) {
-            return JSON.parse(rawSettings)
-        }
+		if (rawSettings) {
+			return JSON.parse(rawSettings)
+		}
 
-        return save(defaultSettings())
-    }
+		return save(defaultSettings())
+	}
 
-    function defaultSettings(): Settings{
-        return {
-            isExtensionEnabled: true,
-        }
-    }
+	function defaultSettings(): Settings{
+		return {
+			isExtensionEnabled: true,
+		}
+	}
 
-    return {
-        save,
-        get,
-    }
+	return {
+		save,
+		get,
+	}
 }
 
 
 (async function() {
-    let appSettings = await settings().get()
+	let appSettings = await settings().get()
 
-    document
-        .querySelector<HTMLInputElement>('#rdoEnableExtension')
-        ?.addEventListener('change', async (evt: Event) => {
-            appSettings.isExtensionEnabled = (evt.currentTarget as any).checked
+	document
+		.querySelector<HTMLInputElement>('#rdoEnableExtension')
+		?.addEventListener('change', async (evt: Event) => {
+			appSettings.isExtensionEnabled = (evt.currentTarget as any).checked
 
-            appSettings = await settings().save(appSettings)
-        })
+			appSettings = await settings().save(appSettings)
+		})
 })()
