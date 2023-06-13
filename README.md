@@ -39,8 +39,8 @@ This will compile the TypeScript code into JavaScript, which will be used by the
 3. Toggle the "Developer mode" switch in the top-right corner.
 4. Click "Load unpacked" and select the `dist` directory.
 
-Alternatively, you can download the extension from the [Chrome Web Store](link-to-chrome-web-store).
-
+Alternatively, you can download the extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/mylms-timetable-plus/dhchofhmkachcdamglpaobnbjmnmdkmp?hl=en-US).
+For Firefox users, you can use the [extension](https://addons.mozilla.org/en-US/firefox/addon/mylms-timetable-plus/)
 ## Contributing
 
 Please read [CONTRIBUTING.md](/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
