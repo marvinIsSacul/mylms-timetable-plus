@@ -39,6 +39,7 @@
     },
     "dependencies": {
         "@toast-ui/calendar": "^2.1.3",
-        "dayjs": "^1.11.8"
+        "dayjs": "^1.11.8",
+        "zod": "^3.21.4"
     }
 }
