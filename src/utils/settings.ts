@@ -1,5 +1,3 @@
-'use-strict'
-
 import zod from 'zod'
 
 const settingsSchema = zod.object({

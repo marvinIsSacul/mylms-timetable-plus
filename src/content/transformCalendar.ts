@@ -1,5 +1,3 @@
-'use-strict'
-
 import Calendar, { EventObject } from '@toast-ui/calendar'
 import dayjs from 'dayjs'
 import { loadCss } from './utils'
