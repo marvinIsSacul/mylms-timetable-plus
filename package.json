@@ -1,6 +1,6 @@
 {
     "name": "mylms-timetable-plus",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "Enhance your MyLMS Timetable",
     "main": "index.js",
     "scripts": {
@@ -39,6 +39,7 @@
     },
     "dependencies": {
         "@toast-ui/calendar": "^2.1.3",
-        "dayjs": "^1.11.8"
+        "dayjs": "^1.11.8",
+        "zod": "^3.21.4"
     }
 }
