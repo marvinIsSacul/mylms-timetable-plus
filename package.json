@@ -1,6 +1,6 @@
 {
     "name": "mylms-timetable-plus",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "Enhance your MyLMS Timetable",
     "main": "index.js",
     "scripts": {
